@@ -6,6 +6,7 @@ import com.javyhuerta.consultorio.api.model.RegistrarCitaModel;
 import com.javyhuerta.consultorio.api.model.base.ApiErrorModel;
 import com.javyhuerta.consultorio.api.model.base.ApiResponseModel;
 import com.javyhuerta.consultorio.api.model.base.Metadata;
+import com.javyhuerta.consultorio.domain.specification.CitasSpecification;
 import com.javyhuerta.consultorio.domain.specification.DoctoresSpecification;
 import com.javyhuerta.consultorio.service.CitasService;
 import com.javyhuerta.consultorio.util.CodigoNegocio;
@@ -57,7 +58,7 @@ public class CitasController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = CitaModel.class)))
     public ResponseEntity<ApiResponseModel<List<CitaModel>>> consultarCitas(
-            @Parameter(description = "Texto a buscar en nombre, apellidos del doctor o especialidad")
+            @Parameter(description = "Texto a buscar en nombre del doctor, fecha de citas o consultorio")
             @Valid @RequestParam(value = "q", required = false) String q,
             @Parameter(description = "Número de página (empezando en 0)")
             @Min(0)  @Valid @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
@@ -65,8 +66,8 @@ public class CitasController {
             @Min(1)  @Valid @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        //DoctoresSpecification doctoresSpecification = DoctoresSpecification.builder().q(q).build();
-        Page<CitaModel> citas = service.consultarCitas(pageable);
+        CitasSpecification citasSpecification = CitasSpecification.builder().q(q).build();
+        Page<CitaModel> citas = service.consultarCitas(citasSpecification,pageable);
 
         ApiResponseModel<List<CitaModel>> response = new ApiResponseModel<>(CodigoNegocio.EXITO,citas.getContent());
         response.setMetadata(new Metadata(citas));

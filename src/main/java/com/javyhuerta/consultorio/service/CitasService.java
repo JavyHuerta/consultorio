@@ -10,6 +10,7 @@ import com.javyhuerta.consultorio.domain.entity.EstadoCita;
 import com.javyhuerta.consultorio.domain.repository.CitasRepository;
 import com.javyhuerta.consultorio.domain.repository.ConsultoriosRepository;
 import com.javyhuerta.consultorio.domain.repository.DoctoresRepository;
+import com.javyhuerta.consultorio.domain.specification.CitasSpecification;
 import com.javyhuerta.consultorio.exception.CitaInvalidaException;
 import com.javyhuerta.consultorio.mapper.CitaMapper;
 import com.javyhuerta.consultorio.mapper.DoctorMapper;
@@ -168,10 +169,10 @@ public class CitasService {
         }
     }
 
-    public Page<CitaModel> consultarCitas(Pageable pageable) {
+    public Page<CitaModel> consultarCitas(CitasSpecification citasSpecification,Pageable pageable) {
         log.info("consultorio.CitasService.consultarCitas");
 
-        Page<Cita> citaPage = citasRepository.findAll(pageable);
+        Page<Cita> citaPage = citasRepository.findAll(citasSpecification,pageable);
         List<CitaModel> response = CitaMapper.INSTANCE.citaToCitaModel(citaPage.getContent());
 
         return new PageImpl<>(response, citaPage.getPageable(), citaPage.getTotalElements());
