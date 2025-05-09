@@ -11,11 +11,13 @@ import java.util.Optional;
 public enum CodigoNegocio {
     EXITO("CM001","Solicitud exitosa"),
     ERROR("CM002","Solicitud fallida"),
-    CITAS_EXECIDAS("CM003","Un mismo doctor no puede tener más de 8 citas en el día"),
+    CITAS_EXCEDIDAS("CM003","Un mismo doctor no puede tener más de 8 citas en el día"),
     CITAS_EMPALMADA("CM004","No se puede agendar cita para un mismo Dr. a la misma hora"),
     CONSULTORIO_OCUPADO("CM005","No se puede agendar cita en un mismo consultorio a la misma hora"),
     DOCTOR_OCUPADO("CM006","El doctor ya tiene una cita en ese horario"),
-    CONFLICTO_HORARIO("CM007","No se puede agendar cita para un paciente a la una misma hora ni con menos de 2 horas de diferencia para el mismo día");
+    CONFLICTO_HORARIO("CM007","No se puede agendar cita para un paciente a la una misma hora ni con menos de 2 horas de diferencia para el mismo día"),
+    DOCTOR_NO_EXISTE("CM008","El doctor no existe"),
+    CONSULTORIO_NO_EXISTE("CM009","El consultorio no existe");
     private final String codigo;
     private final String mensaje;
 

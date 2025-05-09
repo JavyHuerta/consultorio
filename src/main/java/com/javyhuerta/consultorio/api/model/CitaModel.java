@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 @Schema(description = "Representa una solicitud de registro de cita en el sistema")
 public class CitaModel {
 
+    @Schema(description = "Identificador de la cita", example = "1")
+    private Long id;
+
     @Schema(description = "Nombre del paciente", example = "Jane Doe")
     private String nombrePaciente;
 

@@ -1,18 +1,25 @@
 package com.javyhuerta.consultorio.service;
 
 import com.javyhuerta.consultorio.api.model.CitaModel;
+import com.javyhuerta.consultorio.api.model.DoctorModel;
 import com.javyhuerta.consultorio.api.model.RegistrarCitaModel;
 import com.javyhuerta.consultorio.domain.entity.Cita;
 import com.javyhuerta.consultorio.domain.entity.Consultorio;
 import com.javyhuerta.consultorio.domain.entity.Doctor;
 import com.javyhuerta.consultorio.domain.entity.EstadoCita;
 import com.javyhuerta.consultorio.domain.repository.CitasRepository;
+import com.javyhuerta.consultorio.domain.repository.ConsultoriosRepository;
+import com.javyhuerta.consultorio.domain.repository.DoctoresRepository;
 import com.javyhuerta.consultorio.exception.CitaInvalidaException;
 import com.javyhuerta.consultorio.mapper.CitaMapper;
+import com.javyhuerta.consultorio.mapper.DoctorMapper;
 import com.javyhuerta.consultorio.util.CodigoNegocio;
 import com.javyhuerta.consultorio.util.Constantes;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -26,13 +33,18 @@ import java.util.List;
 @AllArgsConstructor
 public class CitasService {
 
-    private final CitasRepository repository;
+    private final CitasRepository citasRepository;
+    private final ConsultoriosRepository consultoriosRepository;
+    private final DoctoresRepository doctoresRepository;
 
     public CitaModel registrarCita(RegistrarCitaModel citaModel){
         log.info("consultorio.CitasService.registrarCita");
 
+        validarExisteDoctor(citaModel.getDoctorId());
+        validarExisteConsultorio(citaModel.getConsultorioId());
+
         // Consultar citas por doctor
-        List<Cita> doctorCitasAgendadas = repository.findByDoctorId(citaModel.getDoctorId());
+        List<Cita> doctorCitasAgendadas = citasRepository.findByDoctorId(citaModel.getDoctorId());
 
 
         validarConsultorioOcupado(citaModel.getConsultorioId(),citaModel.getFechaCita());
@@ -47,7 +59,7 @@ public class CitasService {
         cita.setDoctor(new Doctor(citaModel.getDoctorId()));
         cita.setEstado(EstadoCita.PENDIENTE);
 
-        Cita citaDb = repository.save(cita);
+        Cita citaDb = citasRepository.save(cita);
 
          return CitaMapper.INSTANCE.citaToCitaModel(citaDb);
 
@@ -63,7 +75,7 @@ public class CitasService {
         log.info("consultorio.CitasService.validarConsultorioOcupado");
 
         // Consultar citas por consultorio
-        List<Cita> citasPorConsultorio = repository.findByConsultorioId(consultorioId);
+        List<Cita> citasPorConsultorio = citasRepository.findByConsultorioId(consultorioId);
 
         boolean isConsultorioOcupago = citasPorConsultorio
                 .stream()
@@ -103,7 +115,7 @@ public class CitasService {
         log.info("consultorio.CitasService.validarConflictoHorario");
 
         // Consultar todas las citas del paciente en el mismo dia
-        List<Cita> citasPacienteMismoDia = repository.findByNombrePacienteAndFechaCitaBetween(
+        List<Cita> citasPacienteMismoDia = citasRepository.findByNombrePacienteAndFechaCitaBetween(
                 nombrePaciente,
                 fechaCita.toLocalDate().atStartOfDay(),         // Inicio del día (00:00)
                 fechaCita.toLocalDate().atTime(LocalTime.MAX)   // Fin del dia (23:59:59.999)
@@ -133,7 +145,35 @@ public class CitasService {
                 .count();
 
         if (citasAgendadasDoctor >= Constantes.CITAS_MAXIMAS_POR_DIA){
-            throw new CitaInvalidaException(CodigoNegocio.CITAS_EXECIDAS);
+            throw new CitaInvalidaException(CodigoNegocio.CITAS_EXCEDIDAS);
         }
+    }
+
+    private void validarExisteDoctor(long idDoctor){
+        log.info("consultorio.CitasService.validarExisteDoctor");
+        boolean existeDoctor = doctoresRepository.existsById(idDoctor);
+
+        if (!existeDoctor){
+            throw new CitaInvalidaException(CodigoNegocio.DOCTOR_NO_EXISTE);
+        }
+    }
+
+    private void validarExisteConsultorio(long idConsultorio){
+        log.info("consultorio.CitasService.validarExisteConsultorio");
+
+        boolean existeConsultorio = consultoriosRepository.existsById(idConsultorio);
+
+        if (!existeConsultorio){
+            throw new CitaInvalidaException(CodigoNegocio.CONSULTORIO_NO_EXISTE);
+        }
+    }
+
+    public Page<CitaModel> consultarCitas(Pageable pageable) {
+        log.info("consultorio.CitasService.consultarCitas");
+
+        Page<Cita> citaPage = citasRepository.findAll(pageable);
+        List<CitaModel> response = CitaMapper.INSTANCE.citaToCitaModel(citaPage.getContent());
+
+        return new PageImpl<>(response, citaPage.getPageable(), citaPage.getTotalElements());
     }
 }
