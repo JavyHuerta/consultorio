@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.javyhuerta</groupId>
 	<artifactId>consultorio</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>consultorio</name>
 	<description>Api para consultorio medico</description>
 	<url/>
