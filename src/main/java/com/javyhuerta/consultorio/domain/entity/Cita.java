@@ -1,5 +1,6 @@
 package com.javyhuerta.consultorio.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,9 +21,11 @@ public class Cita {
     @Column(name = "id_cita", nullable = false, updatable = false, unique = true)
     private Long id;
 
-    @Column(name = "nombre_paciente", nullable = false)
-    private String nombrePaciente;
+    @ManyToOne
+    @JoinColumn(name = "id_paciente", nullable = false)
+    private Paciente paciente;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @Column(name = "fecha_cita",nullable = false)
     private LocalDateTime fechaCita;
 
@@ -34,7 +37,8 @@ public class Cita {
     @JoinColumn(name = "id_consultorio", nullable = false)
     private Consultorio consultorio;
 
-    @Enumerated(EnumType.STRING)
-    private EstadoCita estado = EstadoCita.PENDIENTE;
+    @ManyToOne
+    @JoinColumn(name = "id_estatus_cita", nullable = false)
+    private EstatusCita estatus;
 
 }

@@ -12,12 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "doctor")
-public class Doctor implements Serializable {
+@Table(name = "paciente")
+public class Paciente implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_doctor", nullable = false, updatable = false, unique = true)
+    @Column(name = "id_paciente", nullable = false, updatable = false, unique = true)
     private Long id;
 
     @Column(name = "nombre", nullable = false)
@@ -29,12 +29,5 @@ public class Doctor implements Serializable {
     @Column(name = "apellido_materno",nullable = false)
     private String apellidoMaterno;
 
-
-    @OneToMany(mappedBy = "doctor")
-    private List<Cita> citas;
-
-    public Doctor(Long doctorId){
-        this.id = doctorId;
-    }
 
 }
