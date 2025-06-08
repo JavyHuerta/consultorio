@@ -29,6 +29,10 @@ public class Cita {
     @Column(name = "fecha_cita",nullable = false)
     private LocalDateTime fechaCita;
 
+    @JsonFormat(pattern = "HH:mm")
+    @Column(name = "hora_cita", nullable = false)
+    private LocalTime horaCita;
+
     @ManyToOne
     @JoinColumn(name = "id_doctor", nullable = false)
     private Doctor doctor;
