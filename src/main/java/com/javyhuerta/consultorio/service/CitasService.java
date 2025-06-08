@@ -54,11 +54,11 @@ public class CitasService {
         validarCitasMaximas(doctorCitasAgendadas, citaModel.getFechaCita());
 
         Cita cita = new Cita();
-        cita.setNombrePaciente(citaModel.getNombrePaciente());
+      //  cita.setNombrePaciente(citaModel.getNombrePaciente());
         cita.setFechaCita(citaModel.getFechaCita());
         cita.setConsultorio(new Consultorio(citaModel.getConsultorioId()));
         cita.setDoctor(new Doctor(citaModel.getDoctorId()));
-        cita.setEstado(EstadoCita.PENDIENTE);
+        //cita.setEstado(EstadoCita.PENDIENTE);
 
         Cita citaDb = citasRepository.save(cita);
 
@@ -114,7 +114,7 @@ public class CitasService {
      */
     private void validarConflictoHorario(String nombrePaciente, LocalDateTime fechaCita){
         log.info("consultorio.CitasService.validarConflictoHorario");
-
+/*
         // Consultar todas las citas del paciente en el mismo dia
         List<Cita> citasPacienteMismoDia = citasRepository.findByNombrePacienteAndFechaCitaBetween(
                 nombrePaciente,
@@ -129,6 +129,8 @@ public class CitasService {
         if(pacienteConflictoHorario){
             throw new CitaInvalidaException(CodigoNegocio.CONFLICTO_HORARIO);
         }
+
+ */
     }
 
     /**

@@ -19,9 +19,10 @@ import java.util.Random;
 
 @Data
 @Log4j2
-@Component
-public class DataFaker  implements CommandLineRunner {
-
+//@Component
+public class DataFaker  //implements CommandLineRunner
+{
+/*
     private final DoctoresRepository doctoresRepository;
     private final ConsultoriosRepository consultoriosRepository;
     private final CitasRepository citasRepository;
@@ -42,7 +43,7 @@ public class DataFaker  implements CommandLineRunner {
             doctor.setNombre(faker.name().firstName());
             doctor.setApellidoPaterno(faker.name().lastName());
             doctor.setApellidoMaterno(faker.name().lastName());
-            doctor.setEspecialidad(getEspecialidadAleatoria());
+           // doctor.setEspecialidad(getEspecialidadAleatoria());
 
             doctoresRepository.save(doctor);
         }
@@ -77,4 +78,6 @@ public class DataFaker  implements CommandLineRunner {
              citasRepository.save(cita);
         }
     }
+
+ */
 }

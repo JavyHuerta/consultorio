@@ -15,6 +15,6 @@ public interface CitasRepository extends JpaRepository<Cita, Long>, JpaSpecifica
     boolean existsById(Long id);
     List<Cita> findByDoctorId(Long doctorId);
     List<Cita> findByConsultorioId(Long consultorioId);
-    List<Cita> findByNombrePacienteAndFechaCitaBetween(String nombrePaciente, LocalDateTime desde, LocalDateTime hasta);
+   // List<Cita> findByNombrePacienteAndFechaCitaBetween(String nombrePaciente, LocalDateTime desde, LocalDateTime hasta);
 
 }
